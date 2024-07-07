@@ -40,13 +40,13 @@ import {useForm, usePage} from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {nextTick, ref} from "vue";
-import {showSuccessNotification} from "@/event-bus.js";
+
 
 // Uses
 const form = useForm({
     name: '',    
 })
-const page = usePage();
+
 
 // Refs
 const folderNameInput = ref(null)
@@ -57,16 +57,11 @@ const {modelValue} = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-// Computed
-
-// Methods
 function onShow() {
     nextTick(() => folderNameInput.value.focus())
 }
 
-function createFolder() {
-
-   
+function createFolder() {   
     form.post(route('folder.create'), {
         preserveScroll: true,
         onSuccess: () => {
@@ -83,9 +78,7 @@ function closeModal() {
     form.reset()
 }
 
-// Hooks
+
 </script>
 
-<style scoped>
 
-</style>
