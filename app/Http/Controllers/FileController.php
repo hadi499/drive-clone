@@ -23,15 +23,17 @@ class FileController extends Controller
             $folder = $this->getRoot();
         }
         $files = File::query()
-            ->where('parent_id', $folder->id)     
-            ->where('created_by', Auth::id())          
+            ->where('parent_id', $folder->id)
+            ->where('created_by', Auth::id())
             ->orderBy('is_folder', 'desc')
-            ->orderBy('files.created_at', 'desc')
-            ->orderBy('files.id', 'desc')
             ->paginate(10);
 
         $files = FileResource::collection($files);
-        return Inertia::render('MyFiles', compact('files', 'folder'));
+
+        $ancestors = FileResource::collection([...$folder->ancestors, $folder]);
+        $folder = new FileResource($folder);
+
+        return Inertia::render('MyFiles', compact('files', 'folder', 'ancestors'));
     }
 
     public function createFolder(StoreFolderRequest $request)

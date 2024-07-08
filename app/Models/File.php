@@ -25,12 +25,6 @@ class File extends Model
         return $this->belongsTo(File::class, 'parent_id');
     }
 
-    
-    public function isOwnedBy($userId): bool
-    {
-        return $this->created_by == $userId;
-    }
-
     public function owner(): Attribute
     {
         return Attribute::make(
@@ -38,8 +32,13 @@ class File extends Model
                 return $attributes['created_by'] == Auth::id() ? 'me' : $this->user->name;
             }
         );
+    }    
+    public function isOwnedBy($userId): bool
+    {
+        return $this->created_by == $userId;
     }
 
+   
     public function isRoot()
     {
         return $this->parent_id === null;
