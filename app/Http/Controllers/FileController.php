@@ -11,17 +11,25 @@ use App\Http\Requests\StoreFolderRequest;
 
 class FileController extends Controller
 {
-    public function myFiles()
+    public function myFiles(string $folder = null)
     {
-        $folder = $this->getRoot();
-        $query = File::query()
-            ->select('files.*')           
-            ->where('created_by', Auth::id())
-            ->where('_lft', '!=', 1)
+        if ($folder) {
+            $folder = File::query()
+                ->where('created_by', Auth::id())
+                ->where('path', $folder)
+                ->firstOrFail();
+        }
+        if (!$folder) {
+            $folder = $this->getRoot();
+        }
+        $files = File::query()
+            ->where('parent_id', $folder->id)     
+            ->where('created_by', Auth::id())          
             ->orderBy('is_folder', 'desc')
             ->orderBy('files.created_at', 'desc')
-            ->orderBy('files.id', 'desc');
-        $files = $query->paginate(10);
+            ->orderBy('files.id', 'desc')
+            ->paginate(10);
+
         $files = FileResource::collection($files);
         return Inertia::render('MyFiles', compact('files', 'folder'));
     }

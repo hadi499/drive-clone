@@ -22,6 +22,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="file of files.data" :key="file.id"
+                    @dblclick="openFolder(file)"
                         class="border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer">
 
 
@@ -52,10 +53,20 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
     files: Object,
+    folder: Object
     
 })
+
+function openFolder(file) {
+    if (!file.is_folder) {
+        return;
+    }
+
+    router.visit(route('myFiles', {folder: file.path}))
+}
 
 </script>
