@@ -46,7 +46,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="file of files.data" :key="file.id" @dblclick="openFolder(file)"
+                    <tr v-for="file of allFiles.data" :key="file.id" @dblclick="openFolder(file)"
                         class="border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer">
 
 
@@ -67,9 +67,10 @@
                     </tr>
                 </tbody>
             </table>
-            <div v-if="!files.data.length" class="py-8 text-center text-sm text-gray-400">
+            <div v-if="!allFiles.data.length" class="py-8 text-center text-sm text-gray-400">
                 There is no data in this folder
             </div>
+            <div ref="loadMoreIntersect"></div>
 
         </div>
     </AuthenticatedLayout>
@@ -81,13 +82,28 @@ import { router } from "@inertiajs/vue3";
 import { Link } from '@inertiajs/vue3'
 import { HomeIcon } from '@heroicons/vue/20/solid'
 import FileIcon from "@/Components/app/FileIcon.vue";
+import { ref, onMounted, onUpdated } from "vue";
+import { httpGet } from "@/Helper/http-helper.js";
 
-const { files } = defineProps({
+
+const loadMoreIntersect = ref(null)
+
+
+
+
+const props = defineProps({
     files: Object,
     folder: Object,
     ancestors: Object
 
 })
+
+const allFiles = ref({
+    data: props.files.data,
+    next: props.files.links.next
+})
+
+
 
 function openFolder(file) {
     if (!file.is_folder) {
@@ -96,5 +112,37 @@ function openFolder(file) {
 
     router.visit(route('myFiles', { folder: file.path }))
 }
+
+function loadMore() {
+    console.log("load more");
+    console.log(allFiles.value.next);
+
+    if (allFiles.value.next === null) {
+        return
+    }
+
+    httpGet(allFiles.value.next)
+        .then(res => {
+            allFiles.value.data = [...allFiles.value.data, ...res.data]
+            allFiles.value.next = res.links.next
+        })
+}
+
+onUpdated(() => {
+    allFiles.value = {
+        data: props.files.data,
+        next: props.files.links.next
+    }
+})
+
+onMounted(() => {
+
+    const observer = new IntersectionObserver((entries) => entries.forEach(entry => entry.isIntersecting && loadMore()), {
+        rootMargin: '-250px 0px 0px 0px'
+    })
+
+    observer.observe(loadMoreIntersect.value)
+})
+
 
 </script>
