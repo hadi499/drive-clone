@@ -18,6 +18,10 @@
             </template>
         </main>
     </div>
+
+    <ErrorDialog />
+    <FormProgress :form="fileUploadForm" />
+
 </template>
 
 <script setup>
@@ -25,8 +29,10 @@ import Navigation from '@/Components/app/Navigation.vue'
 import SearchForm from '@/Components/app/SearchForm.vue'
 import UserSettingsDropdown from '@/Components/app/UserSettingsDropdown.vue'
 import { onMounted, ref } from "vue";
-import { emitter, FILE_UPLOAD_STARTED } from "@/event-bus.js";
-import {useForm, usePage} from "@inertiajs/vue3"
+import { emitter, FILE_UPLOAD_STARTED, showErrorDialog } from "@/event-bus.js";
+import { useForm, usePage } from "@inertiajs/vue3"
+import FormProgress from "@/Components/app/FormProgress.vue";
+import ErrorDialog from "@/Components/ErrorDialog.vue";
 
 const dragOver = ref(false)
 
@@ -96,13 +102,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
-    .dropzone {
-        width: 100%;
-        height: 100%;
-        color: #8d8d8d;
-        border: 2px dashed gray;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+.dropzone {
+    width: 100%;
+    height: 100%;
+    color: #8d8d8d;
+    border: 2px dashed gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>
