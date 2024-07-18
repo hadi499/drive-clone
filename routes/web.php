@@ -20,6 +20,7 @@ Route::controller(\App\Http\Controllers\FileController::class)
         Route::get('/my-files/{folder?}', 'myFiles')->where('folder', '(.*)')->name('myFiles');
         Route::post('/folder/create', 'createFolder')->name('folder.create');
         Route::post('/file', 'store')->name('file.store');
+        Route::delete('/file', 'destroy')->name('file.delete');
     });
 
 Route::middleware('auth')->group(function () {
@@ -28,4 +29,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
