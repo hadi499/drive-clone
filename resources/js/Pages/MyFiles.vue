@@ -23,6 +23,7 @@
                 </li>
             </ol>
             <div class="flex">
+                <DownloadFilesButton :all="allSelected" :ids="selectedIds" class="mr-2" />
                 <DeleteFilesButton :delete-all="allSelected" :delete-ids="selectedIds" @delete="onDelete" />
             </div>
 
@@ -98,6 +99,7 @@ import { ref, onMounted, onUpdated, computed } from "vue";
 import { httpGet } from "@/Helper/http-helper.js";
 import Checkbox from "@/Components/Checkbox.vue";
 import DeleteFilesButton from "@/Components/app/DeleteFilesButton.vue";
+import DownloadFilesButton from "@/Components/app/DownloadFilesButton.vue";
 
 
 const loadMoreIntersect = ref(null)

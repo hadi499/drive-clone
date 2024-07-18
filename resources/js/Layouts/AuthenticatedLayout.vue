@@ -74,7 +74,7 @@ function uploadFiles(files) {
 
     fileUploadForm.post(route('file.store'), {
         onSuccess: () => {
-            showSuccessNotification(`${files.length} files have been uploaded`)
+            // showSuccessNotification(`${files.length} files have been uploaded`)
         },
         onError: errors => {
             let message = '';
