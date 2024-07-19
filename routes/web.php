@@ -22,6 +22,9 @@ Route::controller(\App\Http\Controllers\FileController::class)
         Route::post('/file', 'store')->name('file.store');
         Route::delete('/file', 'destroy')->name('file.delete');
         Route::get('/file/download', 'download')->name('file.download');
+        Route::get('/trash', 'trash')->name('trash');
+        Route::post('/file/restore', 'restore')->name('file.restore');
+        Route::delete('/file/delete-forever', 'deleteForever')->name('file.deleteForever');
     });
 
 Route::middleware('auth')->group(function () {

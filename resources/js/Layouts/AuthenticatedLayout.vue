@@ -21,6 +21,7 @@
 
     <ErrorDialog />
     <FormProgress :form="fileUploadForm" />
+    <Notification />
 
 </template>
 
@@ -29,10 +30,11 @@ import Navigation from '@/Components/app/Navigation.vue'
 import SearchForm from '@/Components/app/SearchForm.vue'
 import UserSettingsDropdown from '@/Components/app/UserSettingsDropdown.vue'
 import { onMounted, ref } from "vue";
-import { emitter, FILE_UPLOAD_STARTED, showErrorDialog } from "@/event-bus.js";
+import { emitter, FILE_UPLOAD_STARTED, showErrorDialog, showSuccessNotification } from "@/event-bus.js";
 import { useForm, usePage } from "@inertiajs/vue3"
 import FormProgress from "@/Components/app/FormProgress.vue";
 import ErrorDialog from "@/Components/ErrorDialog.vue";
+import Notification from "@/Components/Notification.vue";
 
 const dragOver = ref(false)
 
@@ -74,7 +76,7 @@ function uploadFiles(files) {
 
     fileUploadForm.post(route('file.store'), {
         onSuccess: () => {
-            // showSuccessNotification(`${files.length} files have been uploaded`)
+            showSuccessNotification(`${files.length} files have been uploaded`)
         },
         onError: errors => {
             let message = '';
