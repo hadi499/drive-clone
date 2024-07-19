@@ -67,6 +67,9 @@
                             <FileIcon :file="file" />
                             {{ file.name }}
                         </td>
+                        <td v-if="search" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {{ file.path }}
+                        </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             {{ file.owner }}
@@ -97,6 +100,7 @@ import { HomeIcon } from '@heroicons/vue/20/solid'
 import FileIcon from "@/Components/app/FileIcon.vue";
 import { ref, onMounted, onUpdated, computed } from "vue";
 import { httpGet } from "@/Helper/http-helper.js";
+import { emitter, ON_SEARCH } from "@/event-bus.js";
 import Checkbox from "@/Components/Checkbox.vue";
 import DeleteFilesButton from "@/Components/app/DeleteFilesButton.vue";
 import DownloadFilesButton from "@/Components/app/DownloadFilesButton.vue";
@@ -105,6 +109,9 @@ import DownloadFilesButton from "@/Components/app/DownloadFilesButton.vue";
 const loadMoreIntersect = ref(null)
 const allSelected = ref(false);
 const selected = ref({});
+let search = ref('');
+
+let params = null;
 
 
 
@@ -188,6 +195,13 @@ onUpdated(() => {
 })
 
 onMounted(() => {
+    params = new URLSearchParams(window.location.search)
+
+
+    search.value = params.get('search')
+    emitter.on(ON_SEARCH, (value) => {
+        search.value = value
+    })
 
     const observer = new IntersectionObserver((entries) => entries.forEach(entry => entry.isIntersecting && loadMore()), {
         rootMargin: '-250px 0px 0px 0px'

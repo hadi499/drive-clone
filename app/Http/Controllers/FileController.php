@@ -18,8 +18,9 @@ class FileController extends Controller
 {
     public function myFiles(Request $request, string $folder = null)
     {
-        // echo phpinfo();
-        // exit;
+        $search = $request->get('search');
+
+
         if ($folder) {
             $folder = File::query()
                 ->where('created_by', Auth::id())
@@ -29,11 +30,20 @@ class FileController extends Controller
         if (!$folder) {
             $folder = $this->getRoot();
         }
-        $files = File::query()
+        $query = File::query()
             ->where('parent_id', $folder->id)
             ->where('created_by', Auth::id())
-            ->orderBy('is_folder', 'desc')
-            ->paginate(10);
+            ->where('_lft', '!=', 1)
+            ->orderBy('is_folder', 'desc');
+
+
+        if ($search) {
+            $query->where('name', 'like', "%$search%");
+        } else {
+            $query->where('parent_id', $folder->id);
+        }
+
+        $files = $query->paginate(10);
 
         $files = FileResource::collection($files);
 
